@@ -12,4 +12,4 @@ def createVideo(word):
     video.write_videofile(output_audio_directory+word+".mp4",fps=60,codec="mpeg4",audio=audio_file)
     
     
-createVideo("welcome")    
+createVideo("welcome Giri")    
