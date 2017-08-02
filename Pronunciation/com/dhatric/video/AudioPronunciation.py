@@ -6,3 +6,4 @@ def createAudio(word):
     absolutePathAudio=output_audio_directory+word+".mp3"
     tts.save(absolutePathAudio)
     return absolutePathAudio
+
