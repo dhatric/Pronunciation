@@ -21,12 +21,13 @@ def populateVideoParameters(word,videoFilePath):
     return videoDetails
     
 if __name__ == '__main__':
-    words = ["hallucination"]
+    youtubeSetting = UploadPronunciation.get_authenticated_service(populateVideoParameters("connectToYoutube","connectToYoutube"))
+    words = ["Antarctica","Wilderness","Motivation","Pilgrimage","Diabolical"]
     for word in words:
         print "uploading word "+word
         videoFilePath=VideoPronunciation.createVideo(word)
         videoDetails=populateVideoParameters(word,videoFilePath)
-        UploadPronunciation.uploadToYoutube(videoDetails)
+        UploadPronunciation.uploadToYoutube(videoDetails,youtubeSetting)
         time.sleep(3)
        
     

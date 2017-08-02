@@ -21,4 +21,4 @@ def createVideo(word):
     finalVideo.write_videofile(absoluteVideoFile,codec="mpeg4")
     return absoluteVideoFile
     
-createVideo("You have to grow from the inside out. None can teach you, none can make you spiritual. There is no other teacher but your own soul.")
+#createVideo("You have to grow from the inside out. None can teach you, none can make you spiritual. There is no other teacher but your own soul.")
