@@ -12,9 +12,10 @@ def createVideo(word):
     video = CompositeVideoClip([txt_word],size=screensize)
     absoluteVideoFile=output_video_directory+word+".mp4"
     video.write_videofile(absoluteVideoFile,fps=60,codec="mpeg4",audio=audio_file)
-    time.sleep(5)
+    print "Merging video files"
     singleInstance = VideoFileClip(absoluteVideoFile)
     finalVideo = CompositeVideoClip([singleInstance,singleInstance.set_start(4),singleInstance.set_start(8)])
     finalVideo.write_videofile(absoluteVideoFile,fps=60,codec="mpeg4")
+    return absoluteVideoFile
     
-createVideo("Check")
+#createVideo("Ready to upload to youtube")
