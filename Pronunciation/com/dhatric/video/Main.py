@@ -20,14 +20,13 @@ def populateVideoParameters(word,videoFilePath):
     videoDetails.noauth_local_webserver=True
     return videoDetails
     
-if __name__ == '__main__':
-    youtubeSetting = UploadPronunciation.get_authenticated_service(populateVideoParameters("connectToYoutube","connectToYoutube"))
-    words = ["Antarctica","Wilderness","Motivation","Pilgrimage","Diabolical"]
+if __name__ == '__main__': 
+    words = ["Aggression","Diagnosing","Effortless","Locomotive","Compulsion"]
     for word in words:
         print "uploading word "+word
         videoFilePath=VideoPronunciation.createVideo(word)
         videoDetails=populateVideoParameters(word,videoFilePath)
-        UploadPronunciation.uploadToYoutube(videoDetails,youtubeSetting)
+        UploadPronunciation.uploadToYoutube(videoDetails)
         time.sleep(3)
        
     

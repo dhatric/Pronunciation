@@ -158,10 +158,12 @@ def resumable_upload(insert_request):
       print "Sleeping %f seconds and then retrying..." % sleep_seconds
       time.sleep(sleep_seconds)
 
-def uploadToYoutube(videoDetails,youtubeSetting):
+def uploadToYoutube(videoDetails):
   if not os.path.exists(videoDetails.file):
     exit("Please specify a valid file using the --file= parameter.")
+
+  youtube = get_authenticated_service(videoDetails)
   try:
-    initialize_upload(youtubeSetting, videoDetails)
+    initialize_upload(youtube, videoDetails)
   except HttpError, e:
     print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
