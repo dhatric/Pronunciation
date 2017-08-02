@@ -21,7 +21,7 @@ def populateVideoParameters(word,videoFilePath):
     return videoDetails
     
 if __name__ == '__main__': 
-    words = ["Aggression","Diagnosing","Effortless","Locomotive","Compulsion"]
+    words = ["Disrespect","Capricious","Defecation","Simulation","Antisocial"]
     for word in words:
         print "uploading word "+word
         videoFilePath=VideoPronunciation.createVideo(word)
