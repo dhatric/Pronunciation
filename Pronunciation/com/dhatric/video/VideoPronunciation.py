@@ -13,12 +13,13 @@ def createVideo(word):
     txt_phonetic = TextClip(word,fontsize=40,color='white',font='Algerian')
     txt_phonetic = txt_phonetic.set_pos((250,260)).set_duration(audio_file.duration)
     video = CompositeVideoClip([txt_word,txt_phonetic],size=screensize,bg_color=(255,174,0))
+    filler_video=video
     absoluteVideoFile=output_video_directory+word[:20]+".mp4"
     video.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4",audio=audio_file_path)
     print "Merging video files"
     singleInstance = VideoFileClip(absoluteVideoFile)
-    finalVideo = CompositeVideoClip([singleInstance,singleInstance.set_start(audio_file.duration),singleInstance.set_start(audio_file.duration*2)])
+    finalVideo = CompositeVideoClip([filler_video,singleInstance.set_start(audio_file.duration),filler_video.set_start(2*audio_file.duration),singleInstance.set_start(3*audio_file.duration),filler_video.set_start(4*audio_file.duration),singleInstance.set_start(5*audio_file.duration)])
     finalVideo.write_videofile(absoluteVideoFile,codec="mpeg4")
     return absoluteVideoFile
     
-#createVideo("You have to grow from the inside out. None can teach you, none can make you spiritual. There is no other teacher but your own soul.")
+createVideo("Hi How are you")
