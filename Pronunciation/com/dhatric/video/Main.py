@@ -11,10 +11,10 @@ import UploadPronunciation
 def populateVideoParameters(word,videoFilePath):
     videoDetails = argparse.Namespace()
     videoDetails.file=videoFilePath
-    videoDetails.title=word
-    videoDetails.description=word
+    videoDetails.title="How to pronounce "+word
+    videoDetails.description="How to pronounce "+word
     videoDetails.category="22"
-    videoDetails.keywords=word
+    videoDetails.keywords="pronounce,"+word
     videoDetails.privacyStatus="public"
     videoDetails.logging_level="WARNING"
     videoDetails.noauth_local_webserver=True
