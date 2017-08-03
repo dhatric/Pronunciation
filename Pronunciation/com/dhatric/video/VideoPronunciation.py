@@ -18,7 +18,13 @@ def createVideo(word):
     video.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4",audio=audio_file_path)
     print "Merging video files"
     singleInstance = VideoFileClip(absoluteVideoFile)
-    finalVideo = CompositeVideoClip([filler_video,singleInstance.set_start(audio_file.duration),filler_video.set_start(2*audio_file.duration),singleInstance.set_start(3*audio_file.duration),filler_video.set_start(4*audio_file.duration),singleInstance.set_start(5*audio_file.duration)])
+    videosList=[];
+    for i in range(7):
+        if i%2 ==0:
+            videosList.append(filler_video.set_start(i*audio_file.duration))
+        else:
+            videosList.append(singleInstance.set_start(i*audio_file.duration))     
+    finalVideo = CompositeVideoClip(videosList)
     finalVideo.write_videofile(absoluteVideoFile,codec="mpeg4")
     return absoluteVideoFile
     
