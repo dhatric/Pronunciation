@@ -1,13 +1,9 @@
-'''
-Created on Aug 3, 2017
-
-@author: gdhatric
-'''
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+import sys
 
 if __name__ == '__main__':
-    for i in range(5):
-        if i%2 ==0:
-            print "evem"
-        else:
-            print "odd"
+    #reload(sys)  # Reload does the trick!
+    #sys.setdefaultencoding('UTF8')
+    print 'హలో'
     

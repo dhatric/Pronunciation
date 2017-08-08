@@ -5,8 +5,10 @@ Created on Aug 2, 2017
 '''
 import argparse
 import time
-import VideoPronunciation
+
 import UploadPronunciation
+import VideoPronunciation
+
 
 def populateVideoParameters(word,videoFilePath):
     videoDetails = argparse.Namespace()
@@ -20,8 +22,9 @@ def populateVideoParameters(word,videoFilePath):
     videoDetails.noauth_local_webserver=True
     return videoDetails
     
+    
 if __name__ == '__main__': 
-    words = ["Disrespect","Capricious","Defecation","Simulation","Antisocial"]
+    words = ["hello how are you","I will kill you","PO bey","lets see","fuck off"]
     for word in words:
         print "uploading word "+word
         videoFilePath=VideoPronunciation.createVideo(word)

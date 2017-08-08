@@ -28,4 +28,4 @@ def createVideo(word):
     finalVideo.write_videofile(absoluteVideoFile,codec="mpeg4")
     return absoluteVideoFile
     
-createVideo("Hi How are you")
+#createVideo("Hi How are you")
