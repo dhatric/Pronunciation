@@ -4,6 +4,7 @@ import MySQLdb
 import time
 import requests
 import sys
+from numpy.f2py.crackfortran import expectbegin
 
 def getPhoneticFromWeb(content):
     request = requests.post('http://texttophonetic.appspot.com/ipa',data={'c':content})
@@ -20,7 +21,7 @@ def updateAllWordsWithPhonetic():
     cursor.execute("SELECT wordid,lemma from words where phonetic=''")
     results = cursor.fetchall()
     for row in results:
-        time.sleep(0.2)
+        time.sleep(0.01)
         wordId=row[0]
         word=row[1]
         phonetic = getPhoneticFromWeb(word)
@@ -28,4 +29,8 @@ def updateAllWordsWithPhonetic():
         cursor.execute("update words SET phonetic='%s' where wordid= '%s'" % (db.escape_string(phonetic),wordId)) 
            
 if __name__ == '__main__':
-    updateAllWordsWithPhonetic()
+    try:
+        updateAllWordsWithPhonetic()
+    except:
+        time.sleep(10)
+        updateAllWordsWithPhonetic()  

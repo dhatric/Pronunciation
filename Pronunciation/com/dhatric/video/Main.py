@@ -1,11 +1,8 @@
-'''
-Created on Aug 2, 2017
+# -*- coding: utf-8 -*- 
 
-@author: gdhatric
-'''
 import argparse
 import time
-
+import sys
 import UploadPronunciation
 import VideoPronunciation
 from WordDetails import Word
@@ -23,14 +20,16 @@ def populateVideoParameters(wordObject,videoFilePath):
     return videoDetails
     
     
-if __name__ == '__main__': 
+if __name__ == '__main__':
+    reload(sys)  # Reload does the trick!
+    sys.setdefaultencoding('UTF8') 
     word1=Word()
     word2=Word()
-    word1.set_word("First")
+    word1.set_word("phonetic")
     word1.set_word_id(1)
-    word1.set_phonetic("hehehe")
-    word1.set_example("This is the first example")
-    word1.set_synonyms([])
+    word1.set_phonetic("fəˈnɛtɪk")
+    word1.set_meaning("relating to speech sounds")
+    word1.set_synonyms(["firstOne","SecondOne","ThirdOne"])
     wordObjects = [word1]
     for wordObject in wordObjects:
         print "uploading word "+wordObject.get_word()
