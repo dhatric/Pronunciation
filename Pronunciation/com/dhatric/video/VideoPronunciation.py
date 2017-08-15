@@ -56,8 +56,8 @@ def createVideo(wordObject):
     print "Merging video files"
     singleInstance = VideoFileClip(absoluteVideoFile)
     videosList=[];
-    for i in range(7):
-        if i%2 ==0:
+    for i in range(11):
+        if (i-2)%3 !=0:
             videosList.append(filler_video.set_start(i*audio_file.duration))
         else:
             videosList.append(singleInstance.set_start(i*audio_file.duration))     
