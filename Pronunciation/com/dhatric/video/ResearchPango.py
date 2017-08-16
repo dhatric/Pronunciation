@@ -38,7 +38,7 @@ if __name__ == '__main__':
     
     audio_example_all=CompositeAudioClip(audioCollection)
     auido_example_absolutePath=output_audio_directory+wordObject.get_word()+'examples.mp3'
-    audio_example_all.write_audiofile(auido_example_absolutePath, fps=44100, nbytes=2, buffersize=2000, codec=None, bitrate=None, ffmpeg_params=None, write_logfile=False, verbose=True, progress_bar=True)
+    #audio_example_all.write_audiofile(auido_example_absolutePath, fps=44100, nbytes=2, buffersize=2000, codec=None, bitrate=None, ffmpeg_params=None, write_logfile=False, verbose=True, progress_bar=True)
     usageHeader="<span size='30000' font='Times-New-Roman-Bold-Italic' foreground='white' ><span foreground='red'><b>Usage </b></span></span>"
     txt_word = TextClip(usageHeader,method='pango',size=(700,400),print_cmd="true")
     txt_word = txt_word.set_pos(('center',10)).set_duration(audio_start_time)
@@ -52,5 +52,6 @@ if __name__ == '__main__':
             textCollection.append(txt_word)
             exampleHeight+=125
     video = CompositeVideoClip(textCollection,size=screensize,bg_color=(255,174,0))
+    video=video.set_audio(audio_example_all)
     absoluteVideoFile=output_video_directory+"luck"+".mp4"
-    video.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4",audio=auido_example_absolutePath)
+    video.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4",audio=True)

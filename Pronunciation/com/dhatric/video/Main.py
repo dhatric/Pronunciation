@@ -25,11 +25,13 @@ if __name__ == '__main__':
     sys.setdefaultencoding('UTF8') 
     word1=Word()
     word2=Word()
-    word1.set_word("phonetic")
+    word1.set_word("CounterFeit")
     word1.set_word_id(1)
-    word1.set_phonetic("fəˈnɛtɪk")
-    word1.set_meaning("relating to speech sounds")
-    word1.set_synonyms(["firstOne","SecondOne","ThirdOne"])
+    word1.set_phonetic("kaʊntəfiːt")
+    word1.set_meaning("made in exact imitation of something valuable with the intention to deceive or defraud.")
+    word1.set_synonyms(["fake","forgery","sham","spurious", "bogus", "imitation" ])
+    usage=['Despite the introduction of a security shield on the new 10 stamp, counterfeits are costing the postal service millions of pounds a year.','The business of counterfeiting appears to be expanding.']
+    word1.set_example(usage)
     wordObjects = [word1]
     for wordObject in wordObjects:
         print "uploading word "+wordObject.get_word()

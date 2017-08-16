@@ -11,6 +11,7 @@ height=460
 screensize = (width,height)
 midHeight=height/2
 output_video_directory='../../../output/video/'
+output_audio_directory='../../../output/audio/'
 wordWidth=680
 othersWidth=680
 wordHeight=80
@@ -52,17 +53,50 @@ def createVideo(wordObject):
     video = CompositeVideoClip(textCollection,size=screensize,bg_color=(255,174,0))
     filler_video=video
     absoluteVideoFile=output_video_directory+wordObject.get_word()[:20]+".mp4"
-    video.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4",audio=audio_file_path)
-    print "Merging video files"
-    singleInstance = VideoFileClip(absoluteVideoFile)
+    singleInstance = video.set_audio(audio_file)
     videosList=[];
     for i in range(11):
         if (i-2)%3 !=0:
             videosList.append(filler_video.set_start(i*audio_file.duration))
         else:
             videosList.append(singleInstance.set_start(i*audio_file.duration))     
-    finalVideo = CompositeVideoClip(videosList)
-    finalVideo.write_videofile(absoluteVideoFile,codec="mpeg4")
+    usageVideo=createUsageVideo(wordObject).set_start(CompositeVideoClip(videosList).duration)
+    videosList.append(usageVideo)
+    finalVideo=CompositeVideoClip(videosList)
+    finalVideo.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4")
     return absoluteVideoFile
+
+
+def createUsageAudio(wordObject):
+    audioExampleCollection = []
+    audio_start_time = 2
+    audio_filler = 2
+    for example in wordObject.get_example():
+        audio_file_path = AudioPronunciation.createExampleAudioFromTTS(example)
+        audio_file = AudioFileClip(audio_file_path)
+        print audio_start_time
+        audio_file = audio_file.set_start(audio_start_time)
+        audio_start_time += audio_filler + audio_file.duration
+        audioExampleCollection.append(audio_file)
     
+    usageAudio = CompositeAudioClip(audioExampleCollection)
+    return usageAudio
+
+def createUsageVideo(wordObject):
+    usageAudio = createUsageAudio(wordObject)
+    textExampleCollection=[]
+    usageHeader="<span size='30000' font='Times-New-Roman-Bold-Italic' foreground='white' ><span foreground='red'><b>Usage </b></span></span>"
+    txt_usage_header = TextClip(usageHeader,method='pango',size=(700,400),print_cmd="true")
+    txt_usage_header = txt_usage_header.set_pos(('center',10)).set_duration(usageAudio.duration)
+    textExampleCollection.append(txt_usage_header)    
+    exampleHeight=125
+    if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
+        for example in wordObject.get_example():
+            txt_usage_word = TextClip("<span size='20000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(700,400),print_cmd="true")
+            txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
+            textExampleCollection.append(txt_usage_word)
+            exampleHeight+=125
+    usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(255,174,0))
+    usageVideo=usageVideo.set_audio(usageAudio)
+    return usageVideo   
 #createVideo("Hi How are you")
