@@ -19,6 +19,11 @@ def createAudioFromTTS(wordObject):
     tts.save(absolutePathAudio)
     return absolutePathAudio
 
+def createExampleAudioFromTTS(example_sentense):
+    tts = gTTS(text=example_sentense, lang='en')
+    absolutePathAudio=output_audio_directory+example_sentense[:20]+".mp3"
+    tts.save(absolutePathAudio)
+    return absolutePathAudio
 
 def createAudioFromGoogle(wordObject):
     absolutePathAudio=output_audio_directory+wordObject.get_word()[:20]+".mp3"
