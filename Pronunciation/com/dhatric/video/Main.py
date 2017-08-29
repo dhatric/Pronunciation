@@ -37,7 +37,7 @@ if __name__ == '__main__':
         print "uploading word "+wordObject.get_word()
         videoFilePath=VideoPronunciation.createVideo(wordObject)
         videoDetails=populateVideoParameters(wordObject,videoFilePath)
-        UploadPronunciation.uploadToYoutube(videoDetails)
+        #UploadPronunciation.uploadToYoutube(videoDetails)
         time.sleep(3)
        
     

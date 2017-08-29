@@ -6,16 +6,16 @@ import time
 from WordDetails import Word
 import sys
 
-width=720
-height=460
+width=1600
+height=720
 screensize = (width,height)
 midHeight=height/2
 output_video_directory='../../../output/video/'
 output_audio_directory='../../../output/audio/'
-wordWidth=680
-othersWidth=680
-wordHeight=80
-othersHeight=30
+wordWidth=width-40
+othersWidth=width-40
+wordHeight=height/10
+othersHeight=height/20
 
 def createVideo(wordObject):
     audio_file_path = AudioPronunciation.createAudio(wordObject)
@@ -63,7 +63,7 @@ def createVideo(wordObject):
     usageVideo=createUsageVideo(wordObject).set_start(CompositeVideoClip(videosList).duration)
     videosList.append(usageVideo)
     finalVideo=CompositeVideoClip(videosList)
-    finalVideo.write_videofile(absoluteVideoFile,fps=4,codec="mpeg4")
+    finalVideo.write_videofile(absoluteVideoFile,fps=3,codec="mpeg4")
     return absoluteVideoFile
 
 
@@ -83,19 +83,20 @@ def createUsageAudio(wordObject):
     return usageAudio
 
 def createUsageVideo(wordObject):
+    exampleWidth=width-80
     usageAudio = createUsageAudio(wordObject)
     textExampleCollection=[]
-    usageHeader="<span size='30000' font='Times-New-Roman-Bold-Italic' foreground='white' ><span foreground='red'><b>Usage </b></span></span>"
-    txt_usage_header = TextClip(usageHeader,method='pango',size=(700,400),print_cmd="true")
+    usageHeader="<span size='70000' font='Algerian' foreground='white' ><b>Usage </b></span>"
+    txt_usage_header = TextClip(usageHeader,method='pango',size=(exampleWidth,400),print_cmd="true")
     txt_usage_header = txt_usage_header.set_pos(('center',10)).set_duration(usageAudio.duration)
     textExampleCollection.append(txt_usage_header)    
-    exampleHeight=125
+    exampleHeight=180
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
         for example in wordObject.get_example():
-            txt_usage_word = TextClip("<span size='20000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(700,400),print_cmd="true")
+            txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd="true")
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)
-            exampleHeight+=125
+            exampleHeight+=180
     usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(255,174,0))
     usageVideo=usageVideo.set_audio(usageAudio)
     return usageVideo   
