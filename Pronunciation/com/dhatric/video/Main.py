@@ -41,7 +41,7 @@ if __name__ == '__main__':
         wordObject = WordDataExtractor.populateWordObject(wordObject,db)
         videoFilePath=VideoPronunciation.createVideo(wordObject)
         videoDetails=populateVideoParameters(wordObject,videoFilePath)
-        UploadPronunciation.uploadToYoutube(videoDetails)
+        #UploadPronunciation.uploadToYoutube(videoDetails)
         time.sleep(3)
     db.close()  
     

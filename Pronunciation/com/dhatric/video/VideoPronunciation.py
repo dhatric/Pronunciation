@@ -14,7 +14,7 @@ output_video_directory='../../../output/video/'
 output_audio_directory='../../../output/audio/'
 wordWidth=width-40
 othersWidth=width-40
-wordHeight=height/7
+wordHeight=height/5
 othersHeight=height/20
 buffer_space=10
 website_height=height-120
@@ -70,7 +70,7 @@ def createVideo(wordObject):
     textCollection.append(txt_website)
     
         
-    video = CompositeVideoClip(textCollection,size=screensize,bg_color=(255,174,0))
+    video = CompositeVideoClip(textCollection,size=screensize,bg_color=(72,141,97))
     filler_video=video
     absoluteVideoFile=output_video_directory+wordObject.get_word()[:20]+".mp4"
     singleInstance = video.set_audio(audio_file)
@@ -111,7 +111,7 @@ def createUsageVideo(wordObject):
     exampleWidth=width-80
     usageAudio = createUsageAudio(wordObject)
     textExampleCollection=[]
-    usageHeader="<span size='70000' font='Algerian' foreground='white' ><b>Usage </b></span>"
+    usageHeader="<span size='70000' font='Algerian' foreground='white' ><b>"+wordObject.get_word()+" Usage </b></span>"
     txt_usage_header = TextClip(usageHeader,method='pango',size=(exampleWidth,400),print_cmd="true")
     txt_usage_header = txt_usage_header.set_pos(('center',10)).set_duration(usageAudio.duration)
     textExampleCollection.append(txt_usage_header)    
@@ -119,14 +119,18 @@ def createUsageVideo(wordObject):
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
         counter=0
         for example in wordObject.get_example():
+            example=example.replace(wordObject.get_word(),"<span foreground='red' >"+wordObject.get_word()+"</span>")
             txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd="true")
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)
-            exampleHeight+=180
+            exampleHeight+=150
             counter+=1
             if counter >2:
                 break
-    usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(255,174,0))
+    txt_website = TextClip("www.DictionGuru.com",color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
+    txt_website = txt_website.set_pos(('center',website_height)).set_duration(usageAudio.duration)
+    textExampleCollection.append(txt_website)        
+    usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(72,141,97))
     usageVideo=usageVideo.set_audio(usageAudio)
     return usageVideo   
 #createVideo("Hi How are you")
