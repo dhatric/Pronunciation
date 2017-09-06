@@ -11,7 +11,7 @@ class Word:
 
 
     def set_word_id(self, value):
-        wordId = value
+        self.wordId = value
 
 
     def del_word_id(self):

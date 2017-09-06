@@ -59,9 +59,10 @@ def createVideo(wordObject):
         if (i-2)%3 !=0:
             videosList.append(filler_video.set_start(i*audio_file.duration))
         else:
-            videosList.append(singleInstance.set_start(i*audio_file.duration))     
-    usageVideo=createUsageVideo(wordObject).set_start(CompositeVideoClip(videosList).duration)
-    videosList.append(usageVideo)
+            videosList.append(singleInstance.set_start(i*audio_file.duration))
+    if hasattr(wordObject,"example"):          
+        usageVideo=createUsageVideo(wordObject).set_start(CompositeVideoClip(videosList).duration)
+        videosList.append(usageVideo)
     finalVideo=CompositeVideoClip(videosList)
     finalVideo.write_videofile(absoluteVideoFile,fps=3,codec="mpeg4")
     return absoluteVideoFile
@@ -71,6 +72,7 @@ def createUsageAudio(wordObject):
     audioExampleCollection = []
     audio_start_time = 2
     audio_filler = 2
+    counter=0
     for example in wordObject.get_example():
         audio_file_path = AudioPronunciation.createExampleAudioFromTTS(example)
         audio_file = AudioFileClip(audio_file_path)
@@ -78,6 +80,9 @@ def createUsageAudio(wordObject):
         audio_file = audio_file.set_start(audio_start_time)
         audio_start_time += audio_filler + audio_file.duration
         audioExampleCollection.append(audio_file)
+        counter+=1
+        if counter >2:
+            break
     
     usageAudio = CompositeAudioClip(audioExampleCollection)
     return usageAudio
@@ -92,11 +97,15 @@ def createUsageVideo(wordObject):
     textExampleCollection.append(txt_usage_header)    
     exampleHeight=180
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
+        counter=0
         for example in wordObject.get_example():
             txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd="true")
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)
             exampleHeight+=180
+            counter+=1
+            if counter >2:
+                break
     usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(255,174,0))
     usageVideo=usageVideo.set_audio(usageAudio)
     return usageVideo   

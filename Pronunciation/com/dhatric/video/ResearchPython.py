@@ -5,10 +5,8 @@ from WordDetails import Word
 
 duration=2
 if __name__ == '__main__':
-    for i in range(11):
-        if (i-2)%3 !=0:
-            print "filler " + str(i*duration)
-        else:
-            print "withAudio "+str(i*duration)
+    string = "Special $#!\" 'characters   spaces 888323"
+    string=''.join(e for e in string if e.isalnum())
+    print string
     
     
