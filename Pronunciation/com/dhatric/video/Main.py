@@ -30,7 +30,7 @@ if __name__ == '__main__':
     sys.setdefaultencoding('UTF8') 
     db = MySQLdb.connect("localhost","root","","pronunciation" )
     cursor = db.cursor()
-    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and wordid=816" )
+    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and wordid=37175" )
     results = cursor.fetchall()
     for row in results:
         time.sleep(0.01)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         wordObject = WordDataExtractor.populateWordObject(wordObject,db)
         videoFilePath=VideoPronunciation.createVideo(wordObject)
         videoDetails=populateVideoParameters(wordObject,videoFilePath)
-        #UploadPronunciation.uploadToYoutube(videoDetails)
+        UploadPronunciation.uploadToYoutube(videoDetails)
         time.sleep(3)
     db.close()  
     

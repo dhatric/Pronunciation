@@ -121,7 +121,6 @@ def initialize_upload(youtube, options):
     # 1024 * 1024 (1 megabyte).
     media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
   )
-
   resumable_upload(insert_request)
 
 # This method implements an exponential backoff strategy to resume a

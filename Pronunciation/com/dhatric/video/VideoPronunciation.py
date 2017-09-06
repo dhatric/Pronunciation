@@ -80,9 +80,15 @@ def createVideo(wordObject):
             videosList.append(filler_video.set_start(i*audio_file.duration))
         else:
             videosList.append(singleInstance.set_start(i*audio_file.duration))
+    word_page_duration=CompositeVideoClip(videosList).duration
+    example_page_duration=0        
     if hasattr(wordObject,"example"):          
-        usageVideo=createUsageVideo(wordObject).set_start(CompositeVideoClip(videosList).duration)
-        videosList.append(usageVideo)
+        usageVideo=createUsageVideo(wordObject).set_start(word_page_duration)
+        example_page_duration=usageVideo.duration
+        videosList.append(usageVideo)    
+    subscribe_start_time= word_page_duration+ example_page_duration
+    subscribeVideo=createSubscribeVideo().set_start(subscribe_start_time)
+    videosList.append(subscribeVideo)
     finalVideo=CompositeVideoClip(videosList)
     finalVideo.write_videofile(absoluteVideoFile,fps=3,codec="mpeg4")
     return absoluteVideoFile
@@ -133,4 +139,21 @@ def createUsageVideo(wordObject):
     usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(72,141,97))
     usageVideo=usageVideo.set_audio(usageAudio)
     return usageVideo   
+
+
+def createSubscribeVideo():
+    subscribeCollection=[]
+    subscribeHeader="<span size='80000' font='Algerian' foreground='white' ><b>Subscribe</b></span>"
+    txt_subscribeHeader = TextClip(subscribeHeader,method='pango',size=(wordWidth,wordHeight),print_cmd="true")
+    txt_subscribeHeader = txt_subscribeHeader.set_pos(('center',200)).set_duration(6)
+    dictionHeader="<span size='80000' font='Algerian' foreground='white' ><b>Diction Guru</b></span>"
+    txt_dictionHeader = TextClip(dictionHeader,method='pango',size=(wordWidth,wordHeight),print_cmd="true")
+    txt_dictionHeader = txt_dictionHeader.set_pos(('center',350)).set_duration(6)
+    txt_website = TextClip("www.DictionGuru.com",color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
+    txt_website = txt_website.set_pos(('center',website_height)).set_duration(6)
+    subscribeCollection.append(txt_website)
+    subscribeCollection.append(txt_subscribeHeader)
+    subscribeCollection.append(txt_dictionHeader)
+    subscribeVideo = CompositeVideoClip(subscribeCollection,size=screensize,bg_color=(72,141,97))
+    return subscribeVideo
 #createVideo("Hi How are you")
