@@ -14,8 +14,23 @@ output_video_directory='../../../output/video/'
 output_audio_directory='../../../output/audio/'
 wordWidth=width-40
 othersWidth=width-40
-wordHeight=height/10
+wordHeight=height/7
 othersHeight=height/20
+buffer_space=10
+website_height=height-120
+
+def getSynonymHeightMethod(wordObject):
+    synonym_length= len(wordObject.get_synonyms())
+    print synonym_length
+    synonymWordHeight=othersHeight
+    method='label'
+    if synonym_length > 100 :
+        synonymWordHeight=synonymWordHeight+8
+        method='caption'
+    elif  synonym_length > 200 :
+        synonymWordHeight=synonymWordHeight+12
+        method='caption'
+    return synonymWordHeight ,method 
 
 def createVideo(wordObject):
     audio_file_path = AudioPronunciation.createAudio(wordObject)
@@ -26,29 +41,34 @@ def createVideo(wordObject):
     textCollection=[]
     
     txt_word = TextClip(wordObject.get_word(),color='white',font='Algerian',method='label',size=(wordWidth,wordHeight))
-    txt_word = txt_word.set_pos('center').set_duration(audio_file.duration)
+    txt_word = txt_word.set_pos(('center',150)).set_duration(audio_file.duration)
     textCollection.append(txt_word)
-    height_next_element=midHeight+(txt_word.h/2)
+    height_next_element=280
     
     print hasattr(wordObject,"phonetic")
     
     if hasattr(wordObject,"phonetic") and (wordObject.get_phonetic() and not wordObject.get_phonetic().isspace()):     
         txt_phonetic = TextClip("Phonetic : "+wordObject.get_phonetic(),color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
         txt_phonetic = txt_phonetic.set_duration(audio_file.duration).set_pos(('center',height_next_element))
-        height_next_element=height_next_element+txt_phonetic.h
+        height_next_element=height_next_element+txt_phonetic.h+buffer_space
         textCollection.append(txt_phonetic)
 
     if hasattr(wordObject,"meaning") and (wordObject.get_meaning() and not wordObject.get_meaning().isspace()):     
         txt_meaning = TextClip("Meaning : "+wordObject.get_meaning(),color='white',font='Times-New-Roman-Bold-Italic',method='label',size=(othersWidth,othersHeight))
         txt_meaning  = txt_meaning.set_duration(audio_file.duration).set_pos(('center',height_next_element))
-        height_next_element=height_next_element+txt_meaning.h
+        height_next_element=height_next_element+txt_meaning.h+buffer_space
         textCollection.append(txt_meaning)
-    
+
     if hasattr(wordObject,"synonyms") and len(wordObject.get_synonyms()) != 0 :
-        txt_synonyns = TextClip("Synonyms : "+",".join(wordObject.get_synonyms()),color='white',font='Times-New-Roman-Bold-Italic',method='label',size=(othersWidth,othersHeight))
+        synonymWordHeight,synonymMethod=getSynonymHeightMethod(wordObject)
+        txt_synonyns = TextClip("Synonyms : "+wordObject.get_synonyms(),color='white',font='Times-New-Roman-Bold-Italic',method=synonymMethod,size=(othersWidth,synonymWordHeight))
         txt_synonyns  = txt_synonyns.set_duration(audio_file.duration).set_pos(('center',height_next_element))
-        height_next_element=height_next_element+txt_synonyns.h
         textCollection.append(txt_synonyns)
+    
+    txt_website = TextClip("www.DictionGuru.com",color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
+    txt_website = txt_website.set_pos(('center',website_height)).set_duration(audio_file.duration)
+    textCollection.append(txt_website)
+    
         
     video = CompositeVideoClip(textCollection,size=screensize,bg_color=(255,174,0))
     filler_video=video
