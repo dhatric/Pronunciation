@@ -16,7 +16,7 @@ output_video_directory='../../../output/video/'
 output_audio_directory='../../../output/audio/'
 wordWidth=width-40
 othersWidth=width-40
-wordHeight=height/5
+wordHeight=height/4
 othersHeight=height/20
 buffer_space=10
 website_height=height-120
@@ -45,7 +45,7 @@ def createVideo(wordObject):
     txt_word = TextClip(wordObject.get_word(),color='white',font='Algerian',method='label',size=(wordWidth,wordHeight))
     txt_word = txt_word.set_pos(('center',150)).set_duration(audio_file.duration)
     textCollection.append(txt_word)
-    height_next_element=280
+    height_next_element=320
     
     print hasattr(wordObject,"phonetic")
     
