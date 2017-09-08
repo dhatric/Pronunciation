@@ -5,6 +5,8 @@ import AudioPronunciation
 import time
 from WordDetails import Word
 import sys
+import re
+
 
 width=1600
 height=720
@@ -125,7 +127,7 @@ def createUsageVideo(wordObject):
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
         counter=0
         for example in wordObject.get_example():
-            example=example.replace(wordObject.get_word(),"<span foreground='red' >"+wordObject.get_word()+"</span>")
+            example=getSentenceWithEnclosure(wordObject.get_word(),example,"<span foreground='red' >","</span>")
             txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd="true")
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)
@@ -156,4 +158,16 @@ def createSubscribeVideo():
     subscribeCollection.append(txt_dictionHeader)
     subscribeVideo = CompositeVideoClip(subscribeCollection,size=screensize,bg_color=(72,141,97))
     return subscribeVideo
+
+
+def getSentenceWithEnclosure(word,sentence,startEnclosure,closeEnclosure):
+    sentense_array= sentence.split(" ")
+    sentence_withBold=[]
+    for token in sentense_array:
+        if re.search(word, token, re.IGNORECASE):
+            sentence_withBold.append(startEnclosure+token+closeEnclosure)
+        else:
+            sentence_withBold.append(token)    
+    return ' '.join(sentence_withBold)
+
 #createVideo("Hi How are you")
