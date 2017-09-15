@@ -3,6 +3,8 @@
 import sys
 import re
 
+def removeSpecialCharacters(string):
+        return ''.join(e for e in string if e.isalnum())
 
 def getSentenceWithEnclosure(word,sentence,startEnclosure,closeEnclosure):
     sentense_array= sentence.split(" ")
@@ -16,6 +18,8 @@ def getSentenceWithEnclosure(word,sentence,startEnclosure,closeEnclosure):
 
 duration=2
 if __name__ == '__main__':
-   print getSentenceWithEnclosure("learn","I will learn as If never Learned and will be learning for ever.","<B>","</B>")
+    string="The late abbé Galiani was absolutely right to compare our Council of Finance to Christmas Eve, w"
+    print removeSpecialCharacters(string[:20])
+   #print getSentenceWithEnclosure("learn","I will learn as If never Learned and will be learning for ever.","<B>","</B>")
 
     

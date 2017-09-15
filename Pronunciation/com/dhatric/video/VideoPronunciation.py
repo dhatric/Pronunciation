@@ -74,7 +74,7 @@ def createVideo(wordObject):
         
     video = CompositeVideoClip(textCollection,size=screensize,bg_color=(72,141,97))
     filler_video=video
-    absoluteVideoFile=output_video_directory+wordObject.get_word()[:20]+".mp4"
+    absoluteVideoFile=output_video_directory+wordObject.get_word()[:20]+" how to pronounce"+".mp4"
     singleInstance = video.set_audio(audio_file)
     videosList=[];
     for i in range(11):

@@ -12,19 +12,49 @@ import WordDataExtractor
 def populateVideoParameters(wordObject,videoFilePath):
     videoDetails = argparse.Namespace()
     videoDetails.file=videoFilePath
-    videoDetails.title="How to pronounce "+wordObject.get_word()
-    videoDetails.description="How to pronounce "+wordObject.get_word()
+    videoDetails.title=wordObject.get_word()+": How to pronounce "+wordObject.get_word()+" with Phonetic and Examples"
+    videoDetails.description=getDescriptionWithSEO(wordObject)
     videoDetails.category="22"
-    keywords=" "
-    if hasattr(wordObject,"synonyms"):
-        keywords=wordObject.get_synonyms()
-    videoDetails.keywords="pronounce,"+wordObject.get_word()+keywords
+    videoDetails.keywords=getKeywordsWithSEO(wordObject)
     videoDetails.privacyStatus="public"
     videoDetails.logging_level="WARNING"
     videoDetails.noauth_local_webserver=True
     return videoDetails
     
+
+def getDescriptionWithSEO(wordObject):
+    generic_desc="This video shows how to pronounce "+wordObject.get_word()+" , its phonetic and examples on how to use it"
+    if hasattr(wordObject,"meaning"):
+        generic_desc=generic_desc+"\n"+" Definition : "+wordObject.get_meaning()
+    if hasattr(wordObject,"phonetic"):
+        generic_desc=generic_desc+"\n"+" Phonetic : "+wordObject.get_phonetic()
+    if hasattr(wordObject,"synonyms"):
+        generic_desc=generic_desc+"\n"+" Synonyms : "+wordObject.get_synonyms()
+    if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
+        examples="Examples : "
+        counter=0 
+        for example in wordObject.get_example(): 
+            examples=examples +"\n"+ example
+            counter+=1
+            if counter >2:
+                    break  
+    generic_desc=generic_desc+"\n "+examples
+    return generic_desc
     
+    
+    
+def getKeywordsWithSEO(wordObject):
+    word=wordObject.get_word()
+    keyword=["pronounce "+word, word+" Pronunciation ","spell "+word, word+" spelling ","example "+word ,"usage "+word,word+" usage"]  
+    keyword.append(word+ " Example")
+    keyword.append(word+ " Phonetic")
+    keyword.append(word+ " synonyms")
+    keyword.append("Define "+word)
+    keyword.append(word+ " Definition")
+    keyword.append(word+ " say")
+    keyword.append("How to say "+word)
+    return ",".join(keyword)
+
 if __name__ == '__main__':
     reload(sys)  # Reload does the trick!
     sys.setdefaultencoding('UTF8') 
