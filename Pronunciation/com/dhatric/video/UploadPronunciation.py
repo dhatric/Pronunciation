@@ -16,9 +16,8 @@ from oauth2client.tools import argparser, run_flow
 import argparse
 
 output_video_directory='../../../output/video/'
+output_images_directory='../../../output/images/'
 
-# Explicitly tell the underlying HTTP transport library not to retry, since
-# we are handling retry logic ourselves.
 httplib2.RETRIES = 1
 
 # Maximum number of times to retry before giving up.
@@ -34,60 +33,34 @@ RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
 # codes is raised.
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
-# The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
-# the OAuth 2.0 information for this application, including its client_id and
-# client_secret. You can acquire an OAuth 2.0 client ID and client secret from
-# the Google Developers Console at
-# https://console.developers.google.com/.
-# Please ensure that you have enabled the YouTube Data API for your project.
-# For more information about using OAuth2 to access the YouTube Data API, see:
-#   https://developers.google.com/youtube/v3/guides/authentication
-# For more information about the client_secrets.json file format, see:
-#   https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 CLIENT_SECRETS_FILE = "client_secrets.json"
 
-# This OAuth 2.0 access scope allows an application to upload files to the
-# authenticated user's YouTube channel, but doesn't allow other types of access.
-YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
+YOUTUBE_READ_WRITE_SSL_SCOPE = "https://www.googleapis.com/auth/youtube.force-ssl"
+API_SERVICE_NAME = "youtube"
+API_VERSION = "v3"
 
 # This variable defines a message to display if the CLIENT_SECRETS_FILE is
 # missing.
-MISSING_CLIENT_SECRETS_MESSAGE = """
-WARNING: Please configure OAuth 2.0
-
-To make this sample run you will need to populate the client_secrets.json file
-found at:
-
-   %s
-
-with information from the Developers Console
-https://console.developers.google.com/
-
-For more information about the client_secrets.json file format, please visit:
-https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
-""" % os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                   CLIENT_SECRETS_FILE))
+MISSING_CLIENT_SECRETS_MESSAGE = "Client Secret Json Missing"
 
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 
 def get_authenticated_service(args):
-  flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
-    scope=YOUTUBE_UPLOAD_SCOPE,
+  flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=YOUTUBE_READ_WRITE_SSL_SCOPE,
     message=MISSING_CLIENT_SECRETS_MESSAGE)
 
-  storage = Storage("%s-oauth2.json" % sys.argv[0])
+  storage = Storage("youtube-api-snippets-oauth2.json")
   credentials = storage.get()
 
   if credentials is None or credentials.invalid:
     credentials = run_flow(flow, storage, args)
+  return build(API_SERVICE_NAME, API_VERSION,
+      http=credentials.authorize(httplib2.Http()))
 
-  return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-    http=credentials.authorize(httplib2.Http()))
 
-def initialize_upload(youtube, options):
+def video_upload(youtube, options):
+  print "Uploading video to youtube..."  
   tags = None
   if options.keywords:
     tags = options.keywords.split(",")
@@ -97,52 +70,50 @@ def initialize_upload(youtube, options):
       title=options.title,
       description=options.description,
       tags=tags,
-      categoryId=options.category
+      categoryId=options.category,
+      still_id=options.still_id
     ),
     status=dict(
       privacyStatus=options.privacyStatus
     )
   )
-
   # Call the API's videos.insert method to create and upload the video.
   insert_request = youtube.videos().insert(
     part=",".join(body.keys()),
     body=body,
-    # The chunksize parameter specifies the size of each chunk of data, in
-    # bytes, that will be uploaded at a time. Set a higher value for
-    # reliable connections as fewer chunks lead to faster uploads. Set a lower
-    # value for better recovery on less reliable connections.
-    #
-    # Setting "chunksize" equal to -1 in the code below means that the entire
-    # file will be uploaded in a single HTTP request. (If the upload fails,
-    # it will still be retried where it left off.) This is usually a best
-    # practice, but if you're using Python older than 2.6 or if you're
-    # running on App Engine, you should set the chunksize to something like
-    # 1024 * 1024 (1 megabyte).
     media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
   )
-  return resumable_upload(insert_request)
+  return resumable_upload(insert_request,"VIDEO_UPLOAD")
 
+
+def thumbnails_upload(youtube,media_file, **kwargs):
+  print "Uploading thumbnail to youtube..."    
+  request = youtube.thumbnails().set(media_body=MediaFileUpload(media_file, chunksize=-1,
+                               resumable=True),**kwargs
+  )
+  resumable_upload(request,"THUMBNAIL_UPDATE")
+        
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
-def resumable_upload(insert_request):
+def resumable_upload(insert_request,API_TYPE):
   response = None
   error = None
   retry = 0
   videoID=""
   while response is None:
     try:
-      print "Uploading file..."
       status, response = insert_request.next_chunk()
-      if 'id' in response:
-        videoID=response['id']
-        print "Video id '%s' was successfully uploaded." % response['id']
-      else:
-        exit("The upload failed with an unexpected response: %s" % response)
+      if API_TYPE == 'VIDEO_UPLOAD':
+          if 'id' in response:
+            videoID=response['id']
+            print "Video id '%s' was successfully uploaded." % response['id']
+          else:
+            exit("The upload failed with an unexpected response: %s" % response)
+      elif  API_TYPE == 'THUMBNAIL_UPDATE':
+          print "thumbnail updated"
     except HttpError, e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
-        error = "A retriable HTTP error %d occurred:\n%s" % (e.resp.status,
-                                                             e.content)
+        error = "A retriable HTTP error %d occurred:\n%s" % (e.resp.status,e.content)
       else:
         raise
     except RETRIABLE_EXCEPTIONS, e:
@@ -160,13 +131,16 @@ def resumable_upload(insert_request):
       time.sleep(sleep_seconds)
     return videoID;
 
-def uploadToYoutube(videoDetails):
+
+def uploadToYoutube(videoDetails,wordObject):
   if not os.path.exists(videoDetails.file):
     exit("Please specify a valid file using the --file= parameter.")
   videoId=""
   youtube = get_authenticated_service(videoDetails)
   try:
-    videoId=initialize_upload(youtube, videoDetails)
+    videoId=video_upload(youtube, videoDetails)
+    thumbnail_absolute_Path=output_images_directory+wordObject.get_word()[:20]+".jpeg"
+    thumbnails_upload(youtube,thumbnail_absolute_Path,videoId=videoId)
   except HttpError, e:
     print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
   return videoId 

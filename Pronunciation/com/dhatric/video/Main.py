@@ -14,31 +14,34 @@ def populateVideoParameters(wordObject,videoFilePath):
     videoDetails.file=videoFilePath
     videoDetails.title=wordObject.get_word()+": How to pronounce "+wordObject.get_word()+" with Phonetic and Examples"
     videoDetails.description=getDescriptionWithSEO(wordObject)
-    videoDetails.category="22"
+    videoDetails.category="27"
     videoDetails.keywords=getKeywordsWithSEO(wordObject)
     videoDetails.privacyStatus="public"
     videoDetails.logging_level="WARNING"
     videoDetails.noauth_local_webserver=True
+    videoDetails.still_id=1
     return videoDetails
     
 
 def getDescriptionWithSEO(wordObject):
-    generic_desc="This video shows how to pronounce "+wordObject.get_word()+" , its phonetic and examples on how to use it"
+    word=wordObject.get_word()
+    generic_desc="This video shows how to pronounce "+word+" correctly with phonetic and examples on how to use it"
     if hasattr(wordObject,"meaning"):
-        generic_desc=generic_desc+"\n"+" Definition : "+wordObject.get_meaning()
+        generic_desc=generic_desc+"\n"+word+" Definition : "+wordObject.get_meaning()
     if hasattr(wordObject,"phonetic"):
-        generic_desc=generic_desc+"\n"+" Phonetic : "+wordObject.get_phonetic()
+        generic_desc=generic_desc+"\n"+word+" Phonetic : "+wordObject.get_phonetic()
     if hasattr(wordObject,"synonyms"):
-        generic_desc=generic_desc+"\n"+" Synonyms : "+wordObject.get_synonyms()
+        generic_desc=generic_desc+"\n"+word+" Synonyms : "+wordObject.get_synonyms()
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
-        examples="Examples : "
+        examples=word+" Examples : "
         counter=0 
         for example in wordObject.get_example(): 
             examples=examples +"\n"+ example
             counter+=1
             if counter >2:
                     break  
-    generic_desc=generic_desc+"\n "+examples
+        generic_desc=generic_desc+"\n "+examples
+    generic_desc=generic_desc+"\n"+" 1,00,000 words with definition, phonetic and examples are available at  www.dictionguru.com"
     return generic_desc
     
     
@@ -71,8 +74,8 @@ if __name__ == '__main__':
         wordObject = WordDataExtractor.populateWordObject(wordObject,db)
         videoFilePath=VideoPronunciation.createVideo(wordObject)
         videoDetails=populateVideoParameters(wordObject,videoFilePath)
-        videoId=UploadPronunciation.uploadToYoutube(videoDetails)
-        print "video id",videoId
+        videoId=UploadPronunciation.uploadToYoutube(videoDetails,wordObject)
+        print "video id saving in DB",videoId
         cursor.execute("update words SET success='%s',videoId='%s' where wordid= '%s'" % ("true",videoId,wordObject.get_word_id())) 
         time.sleep(3)
     db.close()  

@@ -13,6 +13,7 @@ height=720
 screensize = (width,height)
 midHeight=height/2
 output_video_directory='../../../output/video/'
+output_images_directory='../../../output/images/'
 output_audio_directory='../../../output/audio/'
 wordWidth=width-40
 othersWidth=width-40
@@ -92,6 +93,7 @@ def createVideo(wordObject):
     subscribeVideo=createSubscribeVideo().set_start(subscribe_start_time)
     videosList.append(subscribeVideo)
     finalVideo=CompositeVideoClip(videosList)
+    finalVideo.save_frame(output_images_directory+wordObject.get_word()[:20]+".jpeg", 2, False)
     finalVideo.write_videofile(absoluteVideoFile,fps=3,codec="mpeg4")
     return absoluteVideoFile
 
