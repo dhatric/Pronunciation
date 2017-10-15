@@ -143,4 +143,6 @@ def uploadToYoutube(videoDetails,wordObject):
     thumbnails_upload(youtube,thumbnail_absolute_Path,videoId=videoId)
   except HttpError, e:
     print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
+    if e.resp.status == 400:
+        exit("Limit reached stopping the execution")
   return videoId 
