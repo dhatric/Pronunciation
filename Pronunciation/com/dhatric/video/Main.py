@@ -8,6 +8,7 @@ import VideoPronunciation
 from WordDetails import Word
 import MySQLdb
 import WordDataExtractor
+import re
 
 def populateVideoParameters(wordObject,videoFilePath):
     videoDetails = argparse.Namespace()
@@ -25,7 +26,7 @@ def populateVideoParameters(wordObject,videoFilePath):
 
 def getDescriptionWithSEO(wordObject):
     word=wordObject.get_word()
-    generic_desc="This video shows how to pronounce "+word+" correctly with phonetic and examples on how to use it"
+    generic_desc="This video shows how to pronounce "+word+", "+ word +" meaning, "+ word +" definition, "+word +" phonetic, "+word +" synonym and "+word +" example\n"
     if hasattr(wordObject,"meaning"):
         generic_desc=generic_desc+"\n"+word+" Definition : "+wordObject.get_meaning()
     if hasattr(wordObject,"phonetic"):
@@ -36,12 +37,13 @@ def getDescriptionWithSEO(wordObject):
         examples=word+" Examples : "
         counter=0 
         for example in wordObject.get_example(): 
-            examples=examples +"\n"+ example
+            examples=examples +"\n"+ re.sub('[<>]+','',example)
             counter+=1
             if counter >2:
                     break  
-        generic_desc=generic_desc+"\n "+examples
-    generic_desc=generic_desc+"\n"+" 1,00,000 words with definition, phonetic and examples are available at  www.dictionguru.com"
+        generic_desc=generic_desc+"\n"+examples
+    generic_desc=generic_desc+"\n\n"+"1,00,000 words with definition, phonetic and examples are available at  http://www.dictionguru.com"
+    print generic_desc
     return generic_desc
     
     
@@ -63,14 +65,18 @@ if __name__ == '__main__':
     sys.setdefaultencoding('UTF8') 
     db = MySQLdb.connect("localhost","root","","pronunciation" )
     cursor = db.cursor()
-    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true'" )
+    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' ORDER by wordid DESC " )
     results = cursor.fetchall()
+    counter=0
     for row in results:
+        counter=counter+1
+        if counter>10:
+            exit("50 videos are already uploaded")
         time.sleep(0.01)
         wordObject=Word()
         wordObject.set_word(row[1])
         wordObject.set_word_id(row[0])
-        print row[0],row[1]
+        print row[0],row[1],counter
         wordObject = WordDataExtractor.populateWordObject(wordObject,db)
         videoFilePath=VideoPronunciation.createVideo(wordObject)
         videoDetails=populateVideoParameters(wordObject,videoFilePath)

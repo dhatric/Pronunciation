@@ -1,6 +1,7 @@
 from gtts import gTTS
 import requests
 from WordDetails import Word
+import time
 
 output_audio_directory='../../../output/audio/'
 google_url='http://ssl.gstatic.com/dictionary/static/sounds/de/0/'
@@ -9,7 +10,9 @@ def removeSpecialCharacters(string):
         return ''.join(e for e in string if e.isalnum())
     
 def createAudio(wordObject):
-    absolutePathAudio=createAudioFromGoogle(wordObject)
+    time.sleep(3)
+    #absolutePathAudio=createAudioFromGoogle(wordObject)
+    absolutePathAudio="NOTFOUND"
     if absolutePathAudio == "NOTFOUND":
         print "wordObject %s not found in google",wordObject.get_word()
         absolutePathAudio=createAudioFromTTS(wordObject)
@@ -22,6 +25,7 @@ def createAudioFromTTS(wordObject):
     return absolutePathAudio
 
 def createExampleAudioFromTTS(example_sentense):
+    time.sleep(3)
     tts = gTTS(text=example_sentense, lang='en')
     absolutePathAudio=output_audio_directory+removeSpecialCharacters(example_sentense[:20].encode('utf8'))+".mp3"
     tts.save(absolutePathAudio)

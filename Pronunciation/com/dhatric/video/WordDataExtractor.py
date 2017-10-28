@@ -29,7 +29,6 @@ def getExamples(soup):
     example_string_array=[]
     for example in examples_array:
         example_str=example.text.replace("‘","").replace("’","")
-        print example_str
         example_string_array.append(example_str)
     return example_string_array
 

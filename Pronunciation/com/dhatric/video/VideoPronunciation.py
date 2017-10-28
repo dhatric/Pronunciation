@@ -129,7 +129,7 @@ def createUsageVideo(wordObject):
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
         counter=0
         for example in wordObject.get_example():
-            example=getSentenceWithEnclosure(wordObject.get_word(),example,"<span foreground='red' >","</span>")
+            example=getSentenceWithEnclosure(wordObject.get_word(),re.sub('[<>]+','',example),"<span foreground='red' >","</span>")
             txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd="true")
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)

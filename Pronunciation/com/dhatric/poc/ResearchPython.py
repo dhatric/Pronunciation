@@ -20,6 +20,8 @@ duration=2
 if __name__ == '__main__':
     string="The late abbé Galiani was absolutely right to compare our Council of Finance to Christmas Eve, w"
     print removeSpecialCharacters(string[:20])
+    yo="helllo < > >> hi"
+    print re.sub('[<>]+','',yo)
    #print getSentenceWithEnclosure("learn","I will learn as If never Learned and will be learning for ever.","<B>","</B>")
 
     
