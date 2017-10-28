@@ -140,7 +140,9 @@ def uploadToYoutube(videoDetails,wordObject):
   try:
     videoId=video_upload(youtube, videoDetails)
     thumbnail_absolute_Path=output_images_directory+wordObject.get_word()[:20]+".jpeg"
-    #thumbnails_upload(youtube,thumbnail_absolute_Path,videoId=videoId)
+    #Upload Thumbnail only if example is present
+    if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
+        thumbnails_upload(youtube,thumbnail_absolute_Path,videoId=videoId)
   except HttpError, e:
     print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
     if e.resp.status == 400:

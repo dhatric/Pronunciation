@@ -14,7 +14,7 @@ def createAudio(wordObject):
     #absolutePathAudio=createAudioFromGoogle(wordObject)
     absolutePathAudio="NOTFOUND"
     if absolutePathAudio == "NOTFOUND":
-        print "wordObject %s not found in google",wordObject.get_word()
+        #print "wordObject %s not found in google",wordObject.get_word()
         absolutePathAudio=createAudioFromTTS(wordObject)
     return absolutePathAudio
 

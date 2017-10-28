@@ -21,10 +21,11 @@ wordHeight=height/4
 othersHeight=height/20
 buffer_space=10
 website_height=height-120
+image_brick_log=False
 
 def getSynonymHeightMethod(wordObject):
     synonym_length= len(wordObject.get_synonyms())
-    print synonym_length
+    #print synonym_length
     synonymWordHeight=othersHeight
     method='label'
     if synonym_length > 100 :
@@ -47,9 +48,7 @@ def createVideo(wordObject):
     txt_word = txt_word.set_pos(('center',150)).set_duration(audio_file.duration)
     textCollection.append(txt_word)
     height_next_element=320
-    
-    print hasattr(wordObject,"phonetic")
-    
+
     if hasattr(wordObject,"phonetic") and (wordObject.get_phonetic() and not wordObject.get_phonetic().isspace()):     
         txt_phonetic = TextClip("Phonetic : "+wordObject.get_phonetic(),color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
         txt_phonetic = txt_phonetic.set_duration(audio_file.duration).set_pos(('center',height_next_element))
@@ -106,7 +105,7 @@ def createUsageAudio(wordObject):
     for example in wordObject.get_example():
         audio_file_path = AudioPronunciation.createExampleAudioFromTTS(example)
         audio_file = AudioFileClip(audio_file_path)
-        print audio_start_time
+        #print audio_start_time
         audio_file = audio_file.set_start(audio_start_time)
         audio_start_time += audio_filler + audio_file.duration
         audioExampleCollection.append(audio_file)
@@ -122,7 +121,7 @@ def createUsageVideo(wordObject):
     usageAudio = createUsageAudio(wordObject)
     textExampleCollection=[]
     usageHeader="<span size='70000' font='Algerian' foreground='white' ><b>"+wordObject.get_word()+" Usage </b></span>"
-    txt_usage_header = TextClip(usageHeader,method='pango',size=(exampleWidth,400),print_cmd="true")
+    txt_usage_header = TextClip(usageHeader,method='pango',size=(exampleWidth,400),print_cmd=image_brick_log)
     txt_usage_header = txt_usage_header.set_pos(('center',10)).set_duration(usageAudio.duration)
     textExampleCollection.append(txt_usage_header)    
     exampleHeight=180
@@ -130,7 +129,7 @@ def createUsageVideo(wordObject):
         counter=0
         for example in wordObject.get_example():
             example=getSentenceWithEnclosure(wordObject.get_word(),re.sub('[<>]+','',example),"<span foreground='red' >","</span>")
-            txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd="true")
+            txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd=image_brick_log)
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)
             exampleHeight+=150
@@ -148,10 +147,10 @@ def createUsageVideo(wordObject):
 def createSubscribeVideo():
     subscribeCollection=[]
     subscribeHeader="<span size='80000' font='Algerian' foreground='white' ><b>Subscribe</b></span>"
-    txt_subscribeHeader = TextClip(subscribeHeader,method='pango',size=(wordWidth,wordHeight),print_cmd="true")
+    txt_subscribeHeader = TextClip(subscribeHeader,method='pango',size=(wordWidth,wordHeight),print_cmd=image_brick_log)
     txt_subscribeHeader = txt_subscribeHeader.set_pos(('center',200)).set_duration(6)
     dictionHeader="<span size='80000' font='Algerian' foreground='white' ><b>Diction Guru</b></span>"
-    txt_dictionHeader = TextClip(dictionHeader,method='pango',size=(wordWidth,wordHeight),print_cmd="true")
+    txt_dictionHeader = TextClip(dictionHeader,method='pango',size=(wordWidth,wordHeight),print_cmd=image_brick_log)
     txt_dictionHeader = txt_dictionHeader.set_pos(('center',350)).set_duration(6)
     txt_website = TextClip("www.DictionGuru.com",color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
     txt_website = txt_website.set_pos(('center',website_height)).set_duration(6)
