@@ -37,13 +37,14 @@ def getSynonymHeightMethod(wordObject):
     return synonymWordHeight ,method 
 
 def createVideo(wordObject):
+    print "Getting Audio for "+wordObject.get_word()
     audio_file_path = AudioPronunciation.createAudio(wordObject)
     audio_file=AudioFileClip(audio_file_path)
-    audio_file.duration
+    print "Got Audio for "+wordObject.get_word()
     reload(sys)  # Reload does the trick!
     sys.setdefaultencoding('UTF8')
     textCollection=[]
-    
+    print "creating video for "+wordObject.get_word()
     txt_word = TextClip(wordObject.get_word(),color='white',font='Algerian',method='label',size=(wordWidth,wordHeight))
     txt_word = txt_word.set_pos(('center',150)).set_duration(audio_file.duration)
     textCollection.append(txt_word)
@@ -84,7 +85,8 @@ def createVideo(wordObject):
             videosList.append(singleInstance.set_start(i*audio_file.duration))
     word_page_duration=CompositeVideoClip(videosList).duration
     example_page_duration=0        
-    if hasattr(wordObject,"example"):          
+    if hasattr(wordObject,"example"):
+        print "creating example for "+wordObject.get_word()          
         usageVideo=createUsageVideo(wordObject).set_start(word_page_duration)
         example_page_duration=usageVideo.duration
         videosList.append(usageVideo)    
@@ -94,6 +96,7 @@ def createVideo(wordObject):
     finalVideo=CompositeVideoClip(videosList)
     finalVideo.save_frame(output_images_directory+wordObject.get_word()[:20]+".jpeg", 2, False)
     finalVideo.write_videofile(absoluteVideoFile,fps=3,codec="mpeg4")
+    print "created video for "+wordObject.get_word()
     return absoluteVideoFile
 
 
@@ -128,7 +131,8 @@ def createUsageVideo(wordObject):
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
         counter=0
         for example in wordObject.get_example():
-            example=getSentenceWithEnclosure(wordObject.get_word(),re.sub('[<>]+','',example),"<span foreground='red' >","</span>")
+            example=getSentenceWithEnclosure(wordObject.get_word(),re.sub('[<>&;]+','',example),"<span foreground='red' >","</span>")
+            #print example
             txt_usage_word = TextClip("<span size='25000' font='Times-New-Roman-Bold-Italic' foreground='white' >"+example+"</span>",method='pango',size=(exampleWidth,400),print_cmd=image_brick_log)
             txt_usage_word = txt_usage_word.set_pos(('center',exampleHeight)).set_duration(usageAudio.duration)
             textExampleCollection.append(txt_usage_word)

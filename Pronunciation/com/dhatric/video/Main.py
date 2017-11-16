@@ -13,7 +13,7 @@ import re
 def populateVideoParameters(wordObject,videoFilePath):
     videoDetails = argparse.Namespace()
     videoDetails.file=videoFilePath
-    videoDetails.title=wordObject.get_word()+": How to pronounce "+wordObject.get_word()+" with Phonetic and Examples"
+    videoDetails.title=wordObject.get_word()+": Pronounce "+wordObject.get_word()+" with Phonetic, Synonyms and Examples"
     videoDetails.description=getDescriptionWithSEO(wordObject)
     videoDetails.category="27"
     videoDetails.keywords=getKeywordsWithSEO(wordObject)
@@ -52,7 +52,10 @@ def getKeywordsWithSEO(wordObject):
     word=wordObject.get_word()
     keyword=["pronounce "+word, word+" Pronunciation ","spell "+word, word+" spelling ","example "+word ,"usage "+word,word+" usage"]  
     keyword.append(word+ " Example")
+    keyword.append("Example "+word)
     keyword.append(word+ " Phonetic")
+    keyword.append("Phonetic " +word)
+    keyword.append(word+ " synonym")
     keyword.append(word+ " synonyms")
     keyword.append("Define "+word)
     keyword.append(word+ " Definition")
@@ -65,12 +68,12 @@ if __name__ == '__main__':
     sys.setdefaultencoding('UTF8') 
     db = MySQLdb.connect("localhost","root","","pronunciation" )
     cursor = db.cursor()
-    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' ORDER by wordid DESC " )
+    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' and wordid!=146302 ORDER by wordid DESC " )
     results = cursor.fetchall()
     counter=0
     for row in results:
         counter=counter+1
-        if counter>10:
+        if counter>30:
             exit("50 videos are already uploaded")
         time.sleep(0.01)
         wordObject=Word()
@@ -78,6 +81,7 @@ if __name__ == '__main__':
         wordObject.set_word_id(row[0])
         print row[0],row[1],counter
         wordObject = WordDataExtractor.populateWordObject(wordObject,db)
+        print row[1]+' got the meaning, synonym and examples'
         videoFilePath=VideoPronunciation.createVideo(wordObject)
         videoDetails=populateVideoParameters(wordObject,videoFilePath)
         videoId=UploadPronunciation.uploadToYoutube(videoDetails,wordObject)

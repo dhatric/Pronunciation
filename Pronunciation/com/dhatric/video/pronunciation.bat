@@ -22,4 +22,3 @@ echo Start time: %date% %time% > %pylogPath%
 echo Starting the Pron task: %Timestamp%
 %pyexePath% %pronunciation_pyPath% >> %pylogPath%
 echo End time: %date% %time% >> %pylogPath%
-pause
