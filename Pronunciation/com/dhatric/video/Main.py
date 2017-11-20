@@ -13,7 +13,7 @@ import re
 def populateVideoParameters(wordObject,videoFilePath):
     videoDetails = argparse.Namespace()
     videoDetails.file=videoFilePath
-    videoDetails.title=wordObject.get_word()+": Pronounce "+wordObject.get_word()+" with Phonetic, Synonyms and Sentence Examples"
+    videoDetails.title=wordObject.get_word()+": Pronounce "+wordObject.get_word()+" with Meaning, Phonetic, Synonyms and Sentence Examples"
     videoDetails.description=getDescriptionWithSEO(wordObject)
     videoDetails.category="27"
     videoDetails.keywords=getKeywordsWithSEO(wordObject)
