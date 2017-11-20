@@ -13,7 +13,7 @@ import re
 def populateVideoParameters(wordObject,videoFilePath):
     videoDetails = argparse.Namespace()
     videoDetails.file=videoFilePath
-    videoDetails.title=wordObject.get_word()+": Pronounce "+wordObject.get_word()+" with Phonetic, Synonyms and Examples"
+    videoDetails.title=wordObject.get_word()+": Pronounce "+wordObject.get_word()+" with Meaning, Phonetic, Synonyms and Sentence Examples"
     videoDetails.description=getDescriptionWithSEO(wordObject)
     videoDetails.category="27"
     videoDetails.keywords=getKeywordsWithSEO(wordObject)
@@ -26,9 +26,9 @@ def populateVideoParameters(wordObject,videoFilePath):
 
 def getDescriptionWithSEO(wordObject):
     word=wordObject.get_word()
-    generic_desc="This video shows how to pronounce "+word+", "+ word +" meaning, "+ word +" definition, "+word +" phonetic, "+word +" synonym and "+word +" example\n"
+    generic_desc="This video shows pronunciation of "+word+" in a sentence, "+ word +" meaning, "+ word +" definition, "+word +" phonetic, "+word +" synonym and "+word +" example\n"
     if hasattr(wordObject,"meaning"):
-        generic_desc=generic_desc+"\n"+word+" Definition : "+wordObject.get_meaning()
+        generic_desc=generic_desc+"\n"+word+" Definition/Meaning : "+wordObject.get_meaning()
     if hasattr(wordObject,"phonetic"):
         generic_desc=generic_desc+"\n"+word+" Phonetic : "+wordObject.get_phonetic()
     if hasattr(wordObject,"synonyms"):
@@ -51,6 +51,7 @@ def getDescriptionWithSEO(wordObject):
 def getKeywordsWithSEO(wordObject):
     word=wordObject.get_word()
     keyword=["pronounce "+word, word+" Pronunciation ","spell "+word, word+" spelling ","example "+word ,"usage "+word,word+" usage"]  
+    keyword.append(word+ " in a sentence")
     keyword.append(word+ " Example")
     keyword.append("Example "+word)
     keyword.append(word+ " Phonetic")
@@ -68,13 +69,13 @@ if __name__ == '__main__':
     sys.setdefaultencoding('UTF8') 
     db = MySQLdb.connect("localhost","root","","pronunciation" )
     cursor = db.cursor()
-    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' and wordid!=146302 ORDER by wordid DESC " )
+    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' and wordid NOT IN (146302,142732) ORDER by wordid DESC " )
     results = cursor.fetchall()
     counter=0
     for row in results:
         counter=counter+1
-        if counter>30:
-            exit("50 videos are already uploaded")
+        if counter>20:
+            exit("20 videos are already uploaded")
         time.sleep(0.01)
         wordObject=Word()
         wordObject.set_word(row[1])

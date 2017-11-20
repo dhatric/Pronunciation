@@ -26,6 +26,7 @@ def createAudioFromTTS(wordObject):
 
 def createExampleAudioFromTTS(example_sentense):
     time.sleep(3)
+    print "creating example audio for "+example_sentense
     tts = gTTS(text=example_sentense, lang='en')
     absolutePathAudio=output_audio_directory+removeSpecialCharacters(example_sentense[:20].encode('utf8'))+".mp3"
     tts.save(absolutePathAudio)
