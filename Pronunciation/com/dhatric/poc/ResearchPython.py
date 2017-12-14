@@ -18,10 +18,14 @@ def getSentenceWithEnclosure(word,sentence,startEnclosure,closeEnclosure):
 
 duration=2
 if __name__ == '__main__':
-    string="The late abbé Galiani was absolutely right to compare our Council of Finance to Christmas Eve, w"
-    print removeSpecialCharacters(string[:20])
-    yo="helllo < > >> hi"
-    print re.sub('[<>]+','',yo)
-   #print getSentenceWithEnclosure("learn","I will learn as If never Learned and will be learning for ever.","<B>","</B>")
+        examples =[]
+        examples.append('1234567896464536')
+        examples.append('1234435545324532453554')
+        examples.append('12345')
+        examples.append('1234567')
+        examples.append('123456789')
+        examples.sort(key=len)
+        for e in examples:
+            print e
 
     

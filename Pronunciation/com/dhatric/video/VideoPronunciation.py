@@ -8,13 +8,14 @@ import sys
 import re
 
 
-width=1600
-height=720
+width=1400
+height=width*9/16
 screensize = (width,height)
 midHeight=height/2
 output_video_directory='../../../output/video/'
 output_images_directory='../../../output/images/'
 output_audio_directory='../../../output/audio/'
+background_image='../background.jpg'
 wordWidth=width-40
 othersWidth=width-40
 wordHeight=height/4
@@ -73,7 +74,7 @@ def createVideo(wordObject):
     textCollection.append(txt_website)
     
         
-    video = CompositeVideoClip(textCollection,size=screensize,bg_color=(72,141,97))
+    video = CompositeVideoClip(textCollection,size=screensize)
     filler_video=video
     absoluteVideoFile=output_video_directory+wordObject.get_word()[:20]+" how to pronounce"+".mp4"
     singleInstance = video.set_audio(audio_file)
@@ -93,9 +94,12 @@ def createVideo(wordObject):
     subscribe_start_time= word_page_duration+ example_page_duration
     subscribeVideo=createSubscribeVideo().set_start(subscribe_start_time)
     videosList.append(subscribeVideo)
+    background_clip = ImageClip(background_image)
+    background_clip = background_clip.set_duration(subscribe_start_time+subscribeVideo.duration)
+    videosList.insert(0,background_clip)
     finalVideo=CompositeVideoClip(videosList)
     finalVideo.save_frame(output_images_directory+wordObject.get_word()[:20]+".jpeg", 2, False)
-    finalVideo.write_videofile(absoluteVideoFile,fps=3,codec="mpeg4")
+    finalVideo.write_videofile(absoluteVideoFile,fps=2,codec="mpeg4")
     print "created video for "+wordObject.get_word()
     return absoluteVideoFile
 
@@ -105,6 +109,7 @@ def createUsageAudio(wordObject):
     audio_start_time = 2
     audio_filler = 2
     counter=0
+    wordObject.get_example().sort(key=len)
     for example in wordObject.get_example():
         audio_file_path = AudioPronunciation.createExampleAudioFromTTS(example)
         audio_file = AudioFileClip(audio_file_path)
@@ -130,6 +135,7 @@ def createUsageVideo(wordObject):
     exampleHeight=180
     if hasattr(wordObject,"example") and len(wordObject.get_example()) > 0 :
         counter=0
+        wordObject.get_example().sort(key=len)
         for example in wordObject.get_example():
             example=getSentenceWithEnclosure(wordObject.get_word(),re.sub('[<>&;]+','',example),"<span foreground='red' >","</span>")
             #print example
@@ -143,7 +149,7 @@ def createUsageVideo(wordObject):
     txt_website = TextClip("www.DictionGuru.com",color='white',font='Arial-Bold',method='label',size=(othersWidth,othersHeight))
     txt_website = txt_website.set_pos(('center',website_height)).set_duration(usageAudio.duration)
     textExampleCollection.append(txt_website)        
-    usageVideo = CompositeVideoClip(textExampleCollection,size=screensize,bg_color=(72,141,97))
+    usageVideo = CompositeVideoClip(textExampleCollection,size=screensize)
     usageVideo=usageVideo.set_audio(usageAudio)
     return usageVideo   
 
@@ -161,7 +167,7 @@ def createSubscribeVideo():
     subscribeCollection.append(txt_website)
     subscribeCollection.append(txt_subscribeHeader)
     subscribeCollection.append(txt_dictionHeader)
-    subscribeVideo = CompositeVideoClip(subscribeCollection,size=screensize,bg_color=(72,141,97))
+    subscribeVideo = CompositeVideoClip(subscribeCollection,size=screensize)
     return subscribeVideo
 
 

@@ -13,10 +13,11 @@ import re
 def populateVideoParameters(wordObject,videoFilePath):
     videoDetails = argparse.Namespace()
     videoDetails.file=videoFilePath
-    videoDetails.title=wordObject.get_word()+": Pronounce "+wordObject.get_word()+" with Meaning, Phonetic, Synonyms and Sentence Examples"
+    videoDetails.title="How to Pronounce "+wordObject.get_word()+" with Meaning, Phonetic, Synonyms and Sentence Examples"
     videoDetails.description=getDescriptionWithSEO(wordObject)
     videoDetails.category="27"
     videoDetails.keywords=getKeywordsWithSEO(wordObject)
+    #videoDetails.keywords=wordObject.get_word()
     videoDetails.privacyStatus="public"
     videoDetails.logging_level="WARNING"
     videoDetails.noauth_local_webserver=True
@@ -69,7 +70,7 @@ if __name__ == '__main__':
     sys.setdefaultencoding('UTF8') 
     db = MySQLdb.connect("localhost","root","","pronunciation" )
     cursor = db.cursor()
-    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' and wordid NOT IN (146302,142732) ORDER by wordid DESC " )
+    cursor.execute("SELECT wordid,lemma from words WHERE lemma  REGEXP '^[a-zA-Z]*$' and success !='true' and wordid NOT IN (146302,142732,140168) ORDER by wordid DESC " )
     results = cursor.fetchall()
     counter=0
     for row in results:
